@@ -1,0 +1,11 @@
+<!doctype html><html><head><base target="_top"></head><body><script>
+window.addEventListener('message',e=>{
+ if(!e.data||e.data.kind!=='AK_CALL'||!['load','save'].includes(e.data.action))return;
+ if(!['https://manthangandhi.github.io','http://localhost:8000','http://127.0.0.1:8000'].includes(e.origin))return;
+ const m=e.data;
+ const reply=(ok,v)=>e.source.postMessage(Object.assign({kind:'AK_RESULT',id:m.id,ok},ok?{data:v}:{error:String(v)}),e.origin);
+ const runner=google.script.run.withSuccessHandler(v=>reply(true,v)).withFailureHandler(e=>reply(false,e.message||e));
+ if(m.action==='load')runner.loadData(m.pin);
+ if(m.action==='save')runner.saveData(m.pin,m.payload&&m.payload.data);
+});
+</script></body></html>
