@@ -1,23 +1,31 @@
-# Ankit & Kajal Wedding Command Centre
+# Ankit & Kajal — Wedding Command Centre V3
 
-Responsive wedding operations app for the family and coordination team. The dashboard is hosted at `/ankit-kajal/`, with Haldi, Sangeet and Shaadi illustrations in `assets/*.svg`.
+A responsive Indian wedding operations tracker using **the actual generated illustrations** of Ankit & Kajal: yellow Haldi outfits, dancing Sangeet outfits, and traditional wedding outfits.
 
-## Tracking modules
+## Website
+- GitHub Pages: https://manthangandhi.github.io/ankit-kajal/
+- Main file: `index.html` (self-contained, illustration images embedded as data URIs to avoid broken SVG wrappers).
+- Modules: Overview, 24 Department POCs, Tasks, Events, Guests & Rooms, Vendors, Budget & Payments, Issues, Inventory & Gifts, Transport, Settings & Sync.
+- Local mode uses browser localStorage. CSV and JSON exports available.
 
-24 Departments and POCs; tasks; ceremony events and timelines; guest room / RSVP tracker; vendors; payments; issues; inventory and gift lists; transportation. Add, edit, delete, search and filter records, export per-module CSV, export or restore full JSON backups. Responsive navigation is optimized for phones.
+## Create your Google Sheet in ONE Run
+Google requires a one-time authorization; the website cannot bypass it.
 
-## Storage and security
+1. Open https://script.google.com/home/projects/create and create a project called `Ankit Kajal Wedding Tracker`.
+2. Replace the starter `Code.gs` with the contents of this repo's `Code.gs`.
+3. Add an HTML file named **Bridge** and paste this repo's `Bridge.html` into it.
+4. In the Apps Script function picker, choose **setupWeddingSheet**, click **Run** and authorize Google.
+5. Open the **Execution log** to copy the **GOOGLE SHEET URL** and **ACCESS PIN**. The one run creates the private Sheet, all nine tabs, 24 departments and seven initial events; it also generates a private 64-character PIN. Running the setup again reuses the existing spreadsheet.
+6. Choose **Deploy → New deployment → Web app**, set **Execute as Me**, access **Anyone**, click Deploy and copy the `/exec` URL.
+7. On the wedding site, open **Settings & Sync**, enter the /exec URL and PIN, Save Connection, then **Download from Sheets** to get the seeded data. Alternatively export a local JSON backup and deliberately use **Upload local to Sheets** to replace the sheet dataset.
 
-By default the app stores records only in the browser's localStorage, **not** on GitHub or across devices. The publicly hosted GitHub Pages frontend has no sign-in. Do not enter sensitive personal information until a private authenticated backend is installed.
+## Important security and collaboration limits
+The Apps Script bridge is a shared-PIN MVP, not secure per-user authentication. Anyone who learns the PIN can access ALL records. Don't store sensitive personal/financial information without stronger authentication. GitHub Pages remains public. Never commit guest data, passwords, PINs or spreadsheet IDs.
 
-An optional starter Google Sheets backend is included as `Code.gs` and `Bridge.html`. To configure: open script.google.com under the Google account that will own the private Sheet; create a project; paste Code.gs and create a Bridge.html HTML file; run setupWeddingSheet() and approve Google permissions; set a Script Property named AK_ACCESS_PIN with a strong random passphrase (16+ chars); deploy Web App as yourself with access Anyone; enter the /exec URL and PIN in Settings & Sync; manually upload local data or download cloud data.
+Whole-dataset saves are **last-write-wins**. Simultaneous editing may overwrite another user's updates. For multi-coordinator use, implement proper server-side per-record updates, version checks, and role-based Google authentication before relying on it as the sole system of record. Take frequent backups.
 
-**Security limitation:** This is a shared-PIN prototype, not secure per-user authentication. A person with the PIN can access and overwrite all records. Cross-device saves use last-write-wins and can lose concurrent changes. For actual guest PII and finance records, replace this with strong user authentication, granular authorization and per-record updates. Do not publicly share the Google Sheet or the PIN. Back up frequently.
-
-## Deployment
-
-GitHub Pages should serve this folder from `https://manthangandhi.github.io/ankit-kajal/` once the repository's Pages settings are enabled. All artwork is committed as optimized embedded-image SVG assets so the repository remains text-file deployable.
-
-## Development
-
-Open the `index.html` in your browser or use a static web server from the folder. Check `CODEX_HANDOFF.md` and the linked GitHub issue for the fuller production roadmap.
+## Files
+- `index.html`: fully responsive dashboard, illustrations and tracking modules
+- `Code.gs`: one-run spreadsheet creation, load and save operations
+- `Bridge.html`: browser-to-Apps-Script cross-origin message bridge
+- `assets/`: additional art versions
